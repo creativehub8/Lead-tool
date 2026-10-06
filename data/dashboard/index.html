@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lead Tool</title>
+<style>
+body{font-family:sans-serif;margin:0;padding:12px;background:#111;color:#eee}
+input,select{width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:0;font-size:16px;box-sizing:border-box}
+.card{background:#1e1e1e;padding:12px;border-radius:10px;margin-bottom:8px}
+.s{font-size:12px;padding:2px 8px;border-radius:6px;background:#2d6cdf}
+a{color:#6cf}
+</style>
+</head>
+<body>
+<h2>Leads</h2>
+<input id="q" placeholder="Search naam / number">
+<select id="st">
+<option value="">Sab status</option>
+<option>New</option><option>Called</option><option>Meeting</option><option>Closed</option>
+</select>
+<div id="list"></div>
+<script>
+let leads=[];
+fetch('../data/leads.json').then(r=>r.json()).then(d=>{leads=d;show()});
+function show(){
+const q=document.getElementById('q').value.toLowerCase();
+const s=document.getElementById('st').value;
+const out=leads.filter(l=>(!s||l.status===s)&&JSON.stringify(l).toLowerCase().includes(q));
+document.getElementById('list').innerHTML=out.length?out.map(l=>
+`<div class="card"><b>${l.name}</b> <span class="s">${l.status}</span><br><a href="tel:${l.phone}">${l.phone}</a><br>${l.note||''}</div>`).join(''):'Koi lead nahi mili';
+}
+q.oninput=show;st.onchange=show;
+</script>
+</body>
+</html>
